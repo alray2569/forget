@@ -27,7 +27,11 @@ along with Perlenspiel. If not, see <http://www.gnu.org/licenses/>.
 // The following comment lines are for JSLint/JSHint. Don't remove them!
 
 /*jslint nomen: true, white: true */
-/*global PS: false, gameMode: true */
+/*global 
+	PS: false, 
+	gameMode: true, 
+	putImage: false
+*/
 
 // This is a template for creating new Perlenspiel games
 
@@ -53,29 +57,13 @@ PS.init = function( system, options ) {
 	
 	PS.statusText("...");
 	
-	putImage("imgs/battle.png");
+	
+	
+	putImage("imgs/battle_egy.png");
 	putImage("imgs/thoth.png", 5, 17);
 	putImage("imgs/healthbar/health15.png", 0, 3);
 	putImage("imgs/healthbar/health2.png", 29, 3);
 };
-
-function putImage (filename, x1, y1, x2, y2) {
-	x1 = x1 || 0;
-	y1 = y1 || 0;
-	x2 = x2 || WIDTH;
-	y2 = y2 || HEIGHT;
-	
-	var draw = function (image) {
-		PS.imageBlit(image, x1, y1, {left: 0, right: 0, width: x2 - x1, height: y2 - y1});
-	};
-	
-	if (images[filename]) {
-		draw(images[filename]);
-	}
-	else {
-		PS.imageLoad(filename, draw);
-	}
-}
 
 // PS.touch ( x, y, data, options )
 // Called when the mouse button is clicked on a bead, or when a bead is touched
@@ -86,10 +74,7 @@ function putImage (filename, x1, y1, x2, y2) {
 // [options] = an object with optional parameters; see documentation for details
 
 PS.touch = function( x, y, data, options ) {
-	// Uncomment the following line to inspect parameters
-	// PS.debug( "PS.touch() @ " + x + ", " + y + "\n" );
-
-	// Add code here for mouse clicks/touches over a bead
+	gameMode.click(x, y, data, options);
 };
 
 // PS.release ( x, y, data, options )
