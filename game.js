@@ -30,7 +30,11 @@ along with Perlenspiel. If not, see <http://www.gnu.org/licenses/>.
 /*global 
 	PS: false, 
 	gameMode: true, 
-	putImage: false
+	putImage: false,
+	BATTLEMODE: false,
+	MAZEMODE: false,
+	NONE: false,
+	Bat: false
 */
 
 // This is a template for creating new Perlenspiel games
@@ -48,6 +52,62 @@ var images = {};
 
 var WIDTH = 32;
 var HEIGHT = 32;
+var NUMMAPS = 1;
+
+var hero;
+
+function Hero () {
+	this.health = 26;
+	this.weakTo = NONE;
+	this.strongTo = NONE;
+}
+
+var bgm;
+
+var prevMaps = [];
+
+var map = {
+	width : 27, height : 32, pixelSize : 1,
+	data : [
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 3, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 2, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0,
+		0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0,
+		0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0,
+		0, 1, 1, 1, 1, 1, 0, 2, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0,
+		0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0,
+		0, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 2, 0, 0, 0, 0, 0,
+		0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0,
+		0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0,
+		0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
+		0, 1, 1, 1, 0, 1, 1, 1, 1, 2, 1, 1, 0, 1, 1, 2, 1, 1, 0, 1, 1, 1, 0, 0, 0, 0, 0,
+		0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0,
+		0, 1, 1, 2, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0,
+		0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0,
+		0, 1, 0, 1, 0, 1, 1, 2, 0, 2, 1, 1, 1, 4, 0, 1, 1, 1, 0, 1, 1, 1, 0, 0, 0, 0, 0,
+		0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 2, 1, 1, 0, 0, 0, 0, 0,
+		0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0,
+		0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0,
+		0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0,
+		0, 1, 1, 1, 1, 2, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+	]
+};
+
+function gameOver() {
+	PS.audioStop(bgm);
+	PS.audioPlay("fx_wilhelm");
+}
 
 PS.init = function( system, options ) {
 	PS.gridSize( WIDTH, HEIGHT );
@@ -55,14 +115,19 @@ PS.init = function( system, options ) {
 	PS.gridColor(0x999999);
 	// Add any other initialization code you need here
 	
+	bgm = PS.audioLoad("ancient_egypt", {
+		autoplay: true,
+		loop: true,
+		path: "music/",
+		volume: 0.4,
+		fileTypes: ["ogg"]
+	});
+	
 	PS.statusText("...");
 	
+	hero = new Hero();
 	
-	
-	putImage("imgs/battle_egy.png");
-	putImage("imgs/thoth.png", 5, 17);
-	putImage("imgs/healthbar/health15.png", 0, 3);
-	putImage("imgs/healthbar/health2.png", 29, 3);
+	MAZEMODE.enterMode(map);
 };
 
 // PS.touch ( x, y, data, options )
@@ -101,10 +166,7 @@ PS.release = function( x, y, data, options ) {
 // [options] = an object with optional parameters; see documentation for details
 
 PS.enter = function( x, y, data, options ) {
-	// Uncomment the following line to inspect parameters
-	// PS.debug( "PS.enter() @ " + x + ", " + y + "\n" );
-
-	// Add code here for when the mouse cursor/touch enters a bead
+	gameMode.enterBead(x, y, data, options);
 };
 
 // PS.exit ( x, y, data, options )
@@ -116,23 +178,9 @@ PS.enter = function( x, y, data, options ) {
 // [options] = an object with optional parameters; see documentation for details
 
 PS.exit = function( x, y, data, options ) {
-	// Uncomment the following line to inspect parameters
-	// PS.debug( "PS.exit() @ " + x + ", " + y + "\n" );
-
-	// Add code here for when the mouse cursor/touch exits a bead
+	gameMode.exitBead(x, y, data, options);
 };
 
-// PS.exitGrid ( options )
-// Called when the mouse cursor/touch exits the grid perimeter
-// It doesn't have to do anything
-// [options] = an object with optional parameters; see documentation for details
-
-PS.exitGrid = function( options ) {
-	// Uncomment the following line to verify operation
-	// PS.debug( "PS.exitGrid() called\n" );
-
-	// Add code here for when the mouse cursor/touch moves off the grid
-};
 
 // PS.keyDown ( key, shift, ctrl, options )
 // Called when a key on the keyboard is pressed
@@ -144,10 +192,7 @@ PS.exitGrid = function( options ) {
 // [options] = an object with optional parameters; see documentation for details
 
 PS.keyDown = function( key, shift, ctrl, options ) {
-	// Uncomment the following line to inspect parameters
-	//	PS.debug( "DOWN: key = " + key + ", shift = " + shift + "\n" );
-
-	// Add code here for when a key is pressed
+	gameMode.keyDown(key, shift, ctrl, options);
 };
 
 // PS.keyUp ( key, shift, ctrl, options )
@@ -160,18 +205,5 @@ PS.keyDown = function( key, shift, ctrl, options ) {
 // [options] = an object with optional parameters; see documentation for details
 
 PS.keyUp = function( key, shift, ctrl, options ) {
-	// Uncomment the following line to inspect parameters
-	// PS.debug( "PS.keyUp(): key = " + key + ", shift = " + shift + ", ctrl = " + ctrl + "\n" );
-
-	// Add code here for when a key is released
-};
-
-// PS.shutdown ( options )
-// Called when the browser window running Perlenspiel is about to close
-// It doesn't have to do anything
-// [options] = an object with optional parameters; see documentation for details
-
-PS.shutdown = function( options ) {
-
-	// Add code here for when Perlenspiel is about to close
+	gameMode.keyUp(key, shift, ctrl, options);
 };

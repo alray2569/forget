@@ -5,6 +5,16 @@
 	images: false
 */
 
+var MAP_WALL = 0;
+var MAP_FLOOR = 1;
+var MAP_GOLD = 2;
+var MAP_ACTOR = 3;
+var MAP_EXIT = 4;
+
+var MAXHEALTH = 26;
+
+var PUTTRIES = 3;
+
 var putImage = function (filename, x1, y1, x2, y2, tries) {
 	x1 = x1 || 0;
 	y1 = y1 || 0;
@@ -14,7 +24,7 @@ var putImage = function (filename, x1, y1, x2, y2, tries) {
 	
 	var draw = function (image) {
 		if (image == PS.ERROR) {
-			if (tries < 3) {
+			if (tries < PUTTRIES) {
 				putImage (filename, x1, y1, x2, y2, tries + 1);
 			}
 			else {
@@ -22,7 +32,7 @@ var putImage = function (filename, x1, y1, x2, y2, tries) {
 			}
 		}
 		if (!PS.imageBlit(image, x1, y1, {left: 0, right: 0, width: x2 - x1, height: y2 - y1})) {
-			if (tries < 3) {
+			if (tries < PUTTRIES) {
 				putImage (filename, x1, y1, x2, y2, tries + 1);
 			}
 			else {
@@ -38,3 +48,20 @@ var putImage = function (filename, x1, y1, x2, y2, tries) {
 		PS.imageLoad(filename, draw);
 	}
 };
+
+function setHealthClamp(target, health) {
+	if (health < 0) {
+		target.health = 0;
+		return 0;
+	}
+	if (health > MAXHEALTH) {
+		target.health = MAXHEALTH;
+		return MAXHEALTH;
+	}
+	target.health = health;
+	return health;
+}
+
+function addHealthClamp(target, delta) {
+	return setHealthClamp(target, target.health + delta);
+}
