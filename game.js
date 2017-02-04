@@ -120,7 +120,7 @@ PS.init = function( system, options ) {
 		loop: true,
 		path: "music/",
 		volume: 0.4,
-		fileTypes: ["ogg"]
+		fileTypes: ["ogg", "mp3", "wav"]
 	});
 	
 	PS.statusText("...");
