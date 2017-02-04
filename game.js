@@ -62,6 +62,14 @@ function Hero () {
 	this.strongTo = NONE;
 }
 
+function preloadImage(filename, callback) {
+	function store(image) {
+		image[filename] = image;
+		callback();
+	}
+	PS.imageLoad(filename, store);
+}
+
 var bgm;
 
 var prevMaps = [];
@@ -109,9 +117,15 @@ function gameOver() {
 	PS.audioPlay("fx_wilhelm");
 }
 
+function gameWin() {
+	PS.fade(PS.ALL, PS.ALL, 60 * 5);
+	PS.color(PS.ALL, PS.ALL, PS.COLOR_BLACK);
+}
+
 PS.init = function( system, options ) {
 	PS.gridSize( WIDTH, HEIGHT );
 	PS.border(PS.ALL, PS.ALL, 0);
+	PS.color(PS.ALL, PS.ALL, 0x847821);
 	PS.gridColor(0x999999);
 	// Add any other initialization code you need here
 	
@@ -127,7 +141,10 @@ PS.init = function( system, options ) {
 	
 	hero = new Hero();
 	
-	MAZEMODE.enterMode(map);
+	// preload to ensure correct render order
+	preloadImage("imgs/healthbar_frame.png", function () {
+		MAZEMODE.enterMode(map);
+	});
 };
 
 // PS.touch ( x, y, data, options )

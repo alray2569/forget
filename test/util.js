@@ -59,8 +59,6 @@ var onLoad = function ( image ) {
 	}
 
 	// Blit the loaded image using its retrieved coordinates
-
-	PS.debug("Blitting " + image.source + " from onLoad.");
 	
 	PS.imageBlit( image, coords.x1, coords.y1, {
 		left: 0,
@@ -91,8 +89,6 @@ var putImage = function ( filename, x1, y1, x2, y2 ) {
 	y2 = y2 || HEIGHT;
 	
 	if (images[filename]) {
-		PS.debug("Blitting " + filename + " from putImages.")
-		
 		PS.imageBlit( images[filename], x1, y1, {
 			left: 0,
 			right: 0,

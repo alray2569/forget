@@ -180,7 +180,11 @@ var BATTLEMODE = {
 	},
 	draw: function () {
 		// draw the fight screen
-		putImage("imgs/battle_egy.png");
+		putImage("imgs/battle_egy_sm.png", 5);
+		putImage("imgs/healthbar_frame.png", ENEMYHEALTHPOS.x - 1);
+		putImage("imgs/healthbar_frame.png", 0);
+		putImage("imgs/shim.png", 5, 18);
+		putImage("imgs/shim.png", 26, 18);
 		putImage("imgs/thoth.png", FIGHTERPOS.x, FIGHTERPOS.y);
 		putImage("imgs/healthbar/health" + hero.health + ".png", HEROHEALTHPOS.x, HEROHEALTHPOS.y);
 		putImage("imgs/healthbar/health" + this.enemy.health + ".png", ENEMYHEALTHPOS.x, ENEMYHEALTHPOS.y);
@@ -201,7 +205,11 @@ var BATTLEMODE = {
 			
 		// redraw battle
 		this.timer2 = PS.timerStart(FLASHDURATION, function (self) {
-			putImage("imgs/battle_egy.png");
+			putImage("imgs/battle_egy_sm.png", 5);
+			putImage("imgs/healthbar_frame.png", ENEMYHEALTHPOS.x - 1);
+			putImage("imgs/healthbar_frame.png", 0);
+			putImage("imgs/shim.png", 5, 18);
+			putImage("imgs/shim.png", 26, 18);
 			if (target !== hero) {putImage("imgs/" + self.enemy.name + ".png", FIGHTERPOS.x, FIGHTERPOS.y);}
 			else {putImage("imgs/thoth.png", FIGHTERPOS.x, FIGHTERPOS.y);}
 			putImage("imgs/healthbar/health" + hero.health + ".png", HEROHEALTHPOS.x, HEROHEALTHPOS.y);
@@ -251,7 +259,7 @@ function inrange(x, y) {
 			return BLUE;
 		}
 	}
-	else if (GREENBUTTON.ymin <= y && GREENBUTTON.xmax > y) { // bottom line
+	else if (GREENBUTTON.ymin <= y && GREENBUTTON.ymax > y) { // bottom line
 		if (GREYBUTTON.xmin <= x && GREYBUTTON.xmax > x) { // left button
 			return GREY;
 		}

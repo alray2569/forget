@@ -11,13 +11,14 @@
 	getRandomEnemy: false,
 	hero: false,
 	putImage: false,
-	addHealthClamp: false
+	addHealthClamp: false,
+	gameWin: false
 */
 
 var DISPLAYOFFSET = 5;
 
-var AVGSTEPSPERENCOUNTER = 10;
-var VARSTEPSPERENCOUNTER = 4; // must be even
+var AVGSTEPSPERENCOUNTER = 15;
+var VARSTEPSPERENCOUNTER = 8; // must be even
 
 var HEALTHBONUS = 5;
 
@@ -80,7 +81,7 @@ var MAZEMODE = {
 			case MAP_WALL:
 				return false;
 			case MAP_EXIT:
-				PS.audioPlay("fx_tada");
+				gameWin();
 				break;
 			case MAP_GOLD:
 				addHealthClamp(hero, HEALTHBONUS);

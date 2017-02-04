@@ -13,37 +13,32 @@ var MAP_EXIT = 4;
 
 var MAXHEALTH = 26;
 
-var PUTTRIES = 3;
+var PUTTRIES = 0;
 
 var putImage = function (filename, x1, y1, x2, y2, tries) {
+	// default values
 	x1 = x1 || 0;
 	y1 = y1 || 0;
 	x2 = x2 || WIDTH;
 	y2 = y2 || HEIGHT;
 	tries = tries || 0;
 	
+	// draw function
 	var draw = function (image) {
-		if (image == PS.ERROR) {
-			if (tries < PUTTRIES) {
-				putImage (filename, x1, y1, x2, y2, tries + 1);
-			}
-			else {
-				PS.debug("Error. Could not load " + filename);
-			}
-		}
-		if (!PS.imageBlit(image, x1, y1, {left: 0, right: 0, width: x2 - x1, height: y2 - y1})) {
-			if (tries < PUTTRIES) {
-				putImage (filename, x1, y1, x2, y2, tries + 1);
-			}
-			else {
-				PS.debug("Error. Could not put " + filename);
-			}
-		}
+		images[filename] = image;
+		PS.imageBlit(image, x1, y1, {
+			left: 0, 
+			right: 0, 
+			width: x2 - x1, 
+			height: y2 - y1
+		});
 	};
 	
+	// check if already loaded
 	if (images[filename]) {
 		draw(images[filename]);
 	}
+	// if not, load it
 	else {
 		PS.imageLoad(filename, draw);
 	}
