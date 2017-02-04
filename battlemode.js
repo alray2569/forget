@@ -180,7 +180,7 @@ var BATTLEMODE = {
 	},
 	draw: function () {
 		// draw the fight screen
-		putImage("imgs/battle_egy.png");
+		putImage("imgs/battle_egy_sm.png");
 		putImage("imgs/thoth.png", FIGHTERPOS.x, FIGHTERPOS.y);
 		putImage("imgs/healthbar/health" + hero.health + ".png", HEROHEALTHPOS.x, HEROHEALTHPOS.y);
 		putImage("imgs/healthbar/health" + this.enemy.health + ".png", ENEMYHEALTHPOS.x, ENEMYHEALTHPOS.y);
@@ -201,7 +201,7 @@ var BATTLEMODE = {
 			
 		// redraw battle
 		this.timer2 = PS.timerStart(FLASHDURATION, function (self) {
-			putImage("imgs/battle_egy.png");
+			putImage("imgs/battle_egy_sm.png", 5);
 			if (target !== hero) {putImage("imgs/" + self.enemy.name + ".png", FIGHTERPOS.x, FIGHTERPOS.y);}
 			else {putImage("imgs/thoth.png", FIGHTERPOS.x, FIGHTERPOS.y);}
 			putImage("imgs/healthbar/health" + hero.health + ".png", HEROHEALTHPOS.x, HEROHEALTHPOS.y);

@@ -31,7 +31,7 @@ var MAZEMODE = {
 	enterMode: function (map) {
 		this.map = map || this.map; // if not given, use existing
 		gameMode = this;
-		this.playerPosition = getStart(this.map);
+		this.playerPosition = this.getStart(this.map);
 		this.draw();
 		this.randomizeNextEncounter();
 	},
@@ -76,7 +76,6 @@ var MAZEMODE = {
 		
 	},
 	attemptMove: function (pos) {
-		PS.debug(this.nextEncounter);
 		switch (this.map.data[pos]) {
 			case MAP_WALL:
 				return false;
@@ -90,9 +89,12 @@ var MAZEMODE = {
 				/* falls through */// because gold should be landable
 			default: 
 				this.playerPosition = pos;
-				this.draw();
 				--this.nextEncounter;
-				if (!this.nextEncounter) {this.encounter();}
+				if (!this.nextEncounter) {
+					this.encounter();
+					return true;
+				}
+				this.draw();
 				return true;
 		}
 	},
@@ -105,7 +107,7 @@ var MAZEMODE = {
 					PS.color(x + DISPLAYOFFSET, y, ACTOR_COLOR);
 				}
 				else {
-					PS.color(x + DISPLAYOFFSET, y, colorFromTile(this.map.data[pos]));
+					PS.color(x + DISPLAYOFFSET, y, this.colorFromTile(this.map.data[pos]));
 				}
 			}
 		}
@@ -123,26 +125,24 @@ var MAZEMODE = {
 	encounter: function () {
 		BATTLEMODE.enterMode(getRandomEnemy());
 		this.randomizeNextEncounter();
+	},
+	colorFromTile: function (tile) {
+		switch(tile) {
+			case MAP_EXIT:
+				return EXIT_COLOR;
+			case MAP_FLOOR:
+			case MAP_ACTOR:
+				return FLOOR_COLOR;
+			case MAP_WALL:
+				return WALL_COLOR;
+			case MAP_GOLD:
+				return GOLD_COLOR;
+		}
+	},
+	getStart: function (map) {
+		var x;
+		for (x = 0; x < map.data.length; ++x) {
+			if (map.data[x] === MAP_ACTOR) {return x;}
+		}
 	}
 };
-
-function colorFromTile (tile) {
-	switch(tile) {
-		case MAP_EXIT:
-			return EXIT_COLOR;
-		case MAP_FLOOR:
-		case MAP_ACTOR:
-			return FLOOR_COLOR;
-		case MAP_WALL:
-			return WALL_COLOR;
-		case MAP_GOLD:
-			return GOLD_COLOR;
-	}
-}
-
-function getStart (map) {
-	var x;
-	for (x = 0; x < map.data.length; ++x) {
-		if (map.data[x] === MAP_ACTOR) {return x;}
-	}
-}

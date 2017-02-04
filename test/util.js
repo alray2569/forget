@@ -5,6 +5,34 @@
 	images: false
 */
 
+var MAP_WALL = 0;
+var MAP_FLOOR = 1;
+var MAP_GOLD = 2;
+var MAP_ACTOR = 3;
+var MAP_EXIT = 4;
+
+var MAXHEALTH = 26;
+
+var PUTTRIES = 3;
+
+
+function setHealthClamp(target, health) {
+	if (health < 0) {
+		target.health = 0;
+		return 0;
+	}
+	if (health > MAXHEALTH) {
+		target.health = MAXHEALTH;
+		return MAXHEALTH;
+	}
+	target.health = health;
+	return health;
+}
+
+function addHealthClamp(target, delta) {
+	return setHealthClamp(target, target.health + delta);
+}
+
 var imageQueue = {};
 
 // This is the asychronous image loader
@@ -32,6 +60,8 @@ var onLoad = function ( image ) {
 
 	// Blit the loaded image using its retrieved coordinates
 
+	PS.debug("Blitting " + image.source + " from onLoad.");
+	
 	PS.imageBlit( image, coords.x1, coords.y1, {
 		left: 0,
 		right: 0,
@@ -55,13 +85,30 @@ var onLoad = function ( image ) {
 
 var putImage = function ( filename, x1, y1, x2, y2 ) {
 
+	x1 = x1 || 0;
+	y1 = y1 || 0;
+	x2 = x2 || WIDTH;
+	y2 = y2 || HEIGHT;
+	
+	if (images[filename]) {
+		PS.debug("Blitting " + filename + " from putImages.")
+		
+		PS.imageBlit( images[filename], x1, y1, {
+			left: 0,
+			right: 0,
+			width: x2 - x1,
+			height: y2 - y1
+		} );
+		return images[filename].id;
+	}
+	
 	// Save a record of this file's coordinates in imageQueue for later retrieval by onLoad()
 
 	imageQueue[ filename ] = {
-		x1 : x1 || 0,
-		y1 : y1 || 0,
-		x2 : x2 || WIDTH,
-		y2 : y2 || HEIGHT
+		x1 : x1,
+		y1 : y1,
+		x2 : x2,
+		y2 : y2
 	};
 
 	// Start the load and return the image id (although you're not using it yet)
