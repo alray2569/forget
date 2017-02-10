@@ -12,32 +12,49 @@
 	hero: false,
 	putImage: false,
 	addHealthClamp: false,
-	gameWin: false
+	gameWin: false,
+	phase: true,
+	bgm: true,
+	bgm2: true,
+	nextPhase: false,
+	ACTIVECOLORS: false,
+	ACTIVEIMGS: false,
+	PUZZLEMODE: false
 */
 
-var DISPLAYOFFSET = 5;
+var MAPSPERPHASE = 2;
 
-var AVGSTEPSPERENCOUNTER = 15;
+var DISPLAYOFFSET = 6;
+
+var AVGSTEPSPERENCOUNTER = 20;
 var VARSTEPSPERENCOUNTER = 8; // must be even
 
 var HEALTHBONUS = 5;
 
-var ACTOR_COLOR = PS.COLOR_BLACK,
-	EXIT_COLOR = 0x0000FF,
-	FLOOR_COLOR = 0xCCC8A5,
-	WALL_COLOR = 0x847821,
-	GOLD_COLOR = PS.COLOR_GREEN;
-
 var MAZEMODE = {
+	totalMaps: 0,
 	enterMode: function (map) {
-		this.map = map || this.map; // if not given, use existing
+		prevMaps.push(map || this.map);
+		this.map = (map || this.map); // if not given, use existing
+		this.map.data = (map || this.map).data.splice(0);
 		gameMode = this;
 		this.playerPosition = this.getStart(this.map);
 		this.draw();
 		this.randomizeNextEncounter();
+		++this.totalMaps;
 	},
 	exitMode: function () {
-		prevMaps.push(this.map);	
+		if (this.totalMaps === MAPSPERPHASE) {
+			if (phase === 2) {
+				gameWin();
+			}
+			else {
+				nextPhase();
+			}
+		}
+		else {
+			PUZZLEMODE.enterMode();
+		}
 	},
 	click: function (x, y, data, options) {
 		
@@ -81,11 +98,10 @@ var MAZEMODE = {
 			case MAP_WALL:
 				return false;
 			case MAP_EXIT:
-				gameWin();
+				this.exitMode();
 				break;
 			case MAP_GOLD:
 				addHealthClamp(hero, HEALTHBONUS);
-				putImage("imgs/healthbar/health" + hero.health + ".png", 1, 3); // update healthbar
 				this.map.data[pos] = MAP_FLOOR; // don't let use multiple times
 				/* falls through */// because gold should be landable
 			default: 
@@ -101,27 +117,30 @@ var MAZEMODE = {
 	},
 	draw: function () {
 		var x, y, pos;
+		// render map bits
 		for (x = 0; x < this.map.width; ++x) {
 			for (y = 0; y < this.map.height; ++y) {
 				pos = x + y * this.map.width;
 				if (pos === this.playerPosition) {
-					PS.color(x + DISPLAYOFFSET, y, ACTOR_COLOR);
+					// player is here
+					PS.color(x + DISPLAYOFFSET, y, ACTIVECOLORS.ACTOR_COLOR);
 				}
 				else {
+					// get the color based on the tile; helper function below
 					PS.color(x + DISPLAYOFFSET, y, this.colorFromTile(this.map.data[pos]));
 				}
 			}
 		}
 		
+		// color blank column
+		PS.color(DISPLAYOFFSET - 1, PS.ALL, ACTIVECOLORS.WALL_COLOR);
+		
 		// put hero health bar
-		putImage("imgs/healthbar_frame.png", 0, 0);
+		putImage(ACTIVEIMGS.HEALTHBAR_FRAME, 0, 0);
 		putImage("imgs/healthbar/health" + hero.health + ".png", 1, 3);
 	},
 	randomizeNextEncounter: function () {
-		this.nextEncounter = 
-			AVGSTEPSPERENCOUNTER + 
-			Math.floor((Math.random() + VARSTEPSPERENCOUNTER)) - 
-			(VARSTEPSPERENCOUNTER / 2);
+		this.nextEncounter = (AVGSTEPSPERENCOUNTER + (PS.random(VARSTEPSPERENCOUNTER) - VARSTEPSPERENCOUNTER / 2));
 	},
 	encounter: function () {
 		BATTLEMODE.enterMode(getRandomEnemy());
@@ -130,15 +149,16 @@ var MAZEMODE = {
 	colorFromTile: function (tile) {
 		switch(tile) {
 			case MAP_EXIT:
-				return EXIT_COLOR;
+				return ACTIVECOLORS.EXIT_COLOR;
 			case MAP_FLOOR:
 			case MAP_ACTOR:
-				return FLOOR_COLOR;
+				return ACTIVECOLORS.FLOOR_COLOR;
 			case MAP_WALL:
-				return WALL_COLOR;
+				return ACTIVECOLORS.WALL_COLOR;
 			case MAP_GOLD:
-				return GOLD_COLOR;
+				return ACTIVECOLORS.GOLD_COLOR;
 		}
+		
 	},
 	getStart: function (map) {
 		var x;

@@ -34,7 +34,14 @@ along with Perlenspiel. If not, see <http://www.gnu.org/licenses/>.
 	BATTLEMODE: false,
 	MAZEMODE: false,
 	NONE: false,
-	Bat: false
+	Bat: false,
+	generate: false,
+	getMapFromMaze: false,
+	Hero: false,
+	preloadImages: false,
+	mySendDB: false,
+	newMap: false,
+	getNextMap: false
 */
 
 // This is a template for creating new Perlenspiel games
@@ -48,7 +55,11 @@ along with Perlenspiel. If not, see <http://www.gnu.org/licenses/>.
 // [system] = an object containing engine and platform information; see documentation for details
 // [options] = an object with optional parameters; see documentation for details
 
+var database;
+
 var images = {};
+
+var phase = 1;
 
 var WIDTH = 32;
 var HEIGHT = 32;
@@ -56,78 +67,20 @@ var NUMMAPS = 1;
 
 var hero;
 
-function Hero () {
-	this.health = 26;
-	this.weakTo = NONE;
-	this.strongTo = NONE;
-}
-
-function preloadImage(filename, callback) {
-	function store(image) {
-		image[filename] = image;
-		callback();
-	}
-	PS.imageLoad(filename, store);
-}
-
-var bgm;
+var bgm, bgm2;
 
 var prevMaps = [];
 
-var map = {
-	width : 27, height : 32, pixelSize : 1,
-	data : [
-		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-		0, 3, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 2, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0,
-		0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0,
-		0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0,
-		0, 1, 1, 1, 1, 1, 0, 2, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0,
-		0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0,
-		0, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 2, 0, 0, 0, 0, 0,
-		0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0,
-		0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0,
-		0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
-		0, 1, 1, 1, 0, 1, 1, 1, 1, 2, 1, 1, 0, 1, 1, 2, 1, 1, 0, 1, 1, 1, 0, 0, 0, 0, 0,
-		0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0,
-		0, 1, 1, 2, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0,
-		0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0,
-		0, 1, 0, 1, 0, 1, 1, 2, 0, 2, 1, 1, 1, 4, 0, 1, 1, 1, 0, 1, 1, 1, 0, 0, 0, 0, 0,
-		0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-		0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 2, 1, 1, 0, 0, 0, 0, 0,
-		0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0,
-		0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0,
-		0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0,
-		0, 1, 1, 1, 1, 2, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-	]
-};
-
-function gameOver() {
-	PS.audioStop(bgm);
-	PS.audioPlay("fx_wilhelm");
-}
-
-function gameWin() {
-	PS.fade(PS.ALL, PS.ALL, 60 * 5);
-	PS.color(PS.ALL, PS.ALL, PS.COLOR_BLACK);
-}
-
 PS.init = function( system, options ) {
+	PS.seed(PS.date().time);
 	PS.gridSize( WIDTH, HEIGHT );
 	PS.border(PS.ALL, PS.ALL, 0);
 	PS.color(PS.ALL, PS.ALL, 0x847821);
 	PS.gridColor(0x999999);
-	// Add any other initialization code you need here
+	
+	PS.statusText("...");
+	
+	database = PS.dbInit("forget-" + PS.date().time, {login: true});
 	
 	bgm = PS.audioLoad("ancient_egypt", {
 		autoplay: true,
@@ -137,13 +90,13 @@ PS.init = function( system, options ) {
 		fileTypes: ["ogg", "mp3", "wav"]
 	});
 	
-	PS.statusText("...");
-	
 	hero = new Hero();
 	
-	// preload to ensure correct render order
-	preloadImage("imgs/healthbar_frame.png", function () {
-		MAZEMODE.enterMode(map);
+	newMap();
+	
+	preloadImages(["imgs/healthbar_frame.png", "imgs/hf_mod.png"], function () {
+		MAZEMODE.enterMode(getNextMap());
+		//PUZZLEMODE.enterMode();
 	});
 };
 
@@ -156,7 +109,7 @@ PS.init = function( system, options ) {
 // [options] = an object with optional parameters; see documentation for details
 
 PS.touch = function( x, y, data, options ) {
-	gameMode.click(x, y, data, options);
+	if (gameMode) {gameMode.click(x, y, data, options);}
 };
 
 // PS.release ( x, y, data, options )
@@ -183,7 +136,7 @@ PS.release = function( x, y, data, options ) {
 // [options] = an object with optional parameters; see documentation for details
 
 PS.enter = function( x, y, data, options ) {
-	gameMode.enterBead(x, y, data, options);
+	if (gameMode) {gameMode.enterBead(x, y, data, options);}
 };
 
 // PS.exit ( x, y, data, options )
@@ -195,7 +148,7 @@ PS.enter = function( x, y, data, options ) {
 // [options] = an object with optional parameters; see documentation for details
 
 PS.exit = function( x, y, data, options ) {
-	gameMode.exitBead(x, y, data, options);
+	if (gameMode) {gameMode.exitBead(x, y, data, options);}
 };
 
 
@@ -209,7 +162,7 @@ PS.exit = function( x, y, data, options ) {
 // [options] = an object with optional parameters; see documentation for details
 
 PS.keyDown = function( key, shift, ctrl, options ) {
-	gameMode.keyDown(key, shift, ctrl, options);
+	if (gameMode) {gameMode.keyDown(key, shift, ctrl, options);}
 };
 
 // PS.keyUp ( key, shift, ctrl, options )
@@ -222,5 +175,10 @@ PS.keyDown = function( key, shift, ctrl, options ) {
 // [options] = an object with optional parameters; see documentation for details
 
 PS.keyUp = function( key, shift, ctrl, options ) {
-	gameMode.keyUp(key, shift, ctrl, options);
+	if (gameMode) {gameMode.keyUp(key, shift, ctrl, options);}
+};
+
+PS.shutdown = function () {
+	PS.dbEvent(database, "endgame", "quit");
+	mySendDB();
 };

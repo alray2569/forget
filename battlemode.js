@@ -4,7 +4,9 @@
 	putImage: false,
 	gameOver: false,
 	prevMaps: false,
-	addHealthClamp: false
+	addHealthClamp: false,
+	ACTIVEIMGS: false,
+	database: false
 */
 /* jshint browser: true */
 
@@ -74,11 +76,14 @@ var BATTLEMODE = {
 		
 		this.draw();
 		
+		this.pih = hero.health;
+		
 		// update the game mode
 		gameMode = this;
 	},
 	exitMode: function () {
 		PS.timerStop(this.timer2);
+		PS.dbEvent(database, "Battle-HealthLost", this.pih - hero.health);
 	},
 	click: function (x, y, data, options) {
 		if (this.whoseTurn !== PLAYER) {return;} // make sure it's our turn
@@ -180,12 +185,12 @@ var BATTLEMODE = {
 	},
 	draw: function () {
 		// draw the fight screen
-		putImage("imgs/battle_egy_sm.png", 5);
-		putImage("imgs/healthbar_frame.png", ENEMYHEALTHPOS.x - 1);
-		putImage("imgs/healthbar_frame.png", 0);
-		putImage("imgs/shim.png", 5, 18);
-		putImage("imgs/shim.png", 26, 18);
-		putImage("imgs/thoth.png", FIGHTERPOS.x, FIGHTERPOS.y);
+		putImage(ACTIVEIMGS.BATTLE_BG, 5);
+		putImage(ACTIVEIMGS.HEALTHBAR_FRAME, ENEMYHEALTHPOS.x - 1);
+		putImage(ACTIVEIMGS.HEALTHBAR_FRAME, 0);
+		putImage(ACTIVEIMGS.SHIM, 5, 18);
+		putImage(ACTIVEIMGS.SHIM, 26, 18);
+		putImage(ACTIVEIMGS.HERO_IMG, FIGHTERPOS.x, FIGHTERPOS.y);
 		putImage("imgs/healthbar/health" + hero.health + ".png", HEROHEALTHPOS.x, HEROHEALTHPOS.y);
 		putImage("imgs/healthbar/health" + this.enemy.health + ".png", ENEMYHEALTHPOS.x, ENEMYHEALTHPOS.y);
 	},
@@ -205,13 +210,13 @@ var BATTLEMODE = {
 			
 		// redraw battle
 		this.timer2 = PS.timerStart(FLASHDURATION, function (self) {
-			putImage("imgs/battle_egy_sm.png", 5);
-			putImage("imgs/healthbar_frame.png", ENEMYHEALTHPOS.x - 1);
-			putImage("imgs/healthbar_frame.png", 0);
-			putImage("imgs/shim.png", 5, 18);
-			putImage("imgs/shim.png", 26, 18);
-			if (target !== hero) {putImage("imgs/" + self.enemy.name + ".png", FIGHTERPOS.x, FIGHTERPOS.y);}
-			else {putImage("imgs/thoth.png", FIGHTERPOS.x, FIGHTERPOS.y);}
+			putImage(ACTIVEIMGS.BATTLE_BG, 5);
+			putImage(ACTIVEIMGS.HEALTHBAR_FRAME, ENEMYHEALTHPOS.x - 1);
+			putImage(ACTIVEIMGS.HEALTHBAR_FRAME, 0);
+			putImage(ACTIVEIMGS.SHIM, 5, 18);
+			putImage(ACTIVEIMGS.SHIM, 26, 18);
+			if (target !== hero) {putImage(ACTIVEIMGS[self.enemy.name], FIGHTERPOS.x, FIGHTERPOS.y);}
+			else {putImage(ACTIVEIMGS.HERO_IMG, FIGHTERPOS.x, FIGHTERPOS.y);}
 			putImage("imgs/healthbar/health" + hero.health + ".png", HEROHEALTHPOS.x, HEROHEALTHPOS.y);
 			putImage("imgs/healthbar/health" + self.enemy.health + ".png", ENEMYHEALTHPOS.x, ENEMYHEALTHPOS.y);
 			return PS.ERROR; // do not repeat
