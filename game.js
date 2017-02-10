@@ -41,7 +41,8 @@ along with Perlenspiel. If not, see <http://www.gnu.org/licenses/>.
 	preloadImages: false,
 	mySendDB: false,
 	newMap: false,
-	getNextMap: false
+	getNextMap: false,
+	gameOver: false
 */
 
 // This is a template for creating new Perlenspiel games
@@ -109,22 +110,7 @@ PS.init = function( system, options ) {
 // [options] = an object with optional parameters; see documentation for details
 
 PS.touch = function( x, y, data, options ) {
-	if (gameMode) {gameMode.click(x, y, data, options);}
-};
-
-// PS.release ( x, y, data, options )
-// Called when the mouse button is released over a bead, or when a touch is lifted off a bead
-// It doesn't have to do anything
-// [x] = zero-based x-position of the bead on the grid
-// [y] = zero-based y-position of the bead on the grid
-// [data] = the data value associated with this bead, 0 if none has been set
-// [options] = an object with optional parameters; see documentation for details
-
-PS.release = function( x, y, data, options ) {
-	// Uncomment the following line to inspect parameters
-	// PS.debug( "PS.release() @ " + x + ", " + y + "\n" );
-
-	// Add code here for when the mouse button/touch is released over a bead
+	if (gameMode && !gameOver) {gameMode.click(x, y, data, options);}
 };
 
 // PS.enter ( x, y, button, data, options )
@@ -136,7 +122,7 @@ PS.release = function( x, y, data, options ) {
 // [options] = an object with optional parameters; see documentation for details
 
 PS.enter = function( x, y, data, options ) {
-	if (gameMode) {gameMode.enterBead(x, y, data, options);}
+	if (gameMode && !gameOver) {gameMode.enterBead(x, y, data, options);}
 };
 
 // PS.exit ( x, y, data, options )
@@ -148,7 +134,7 @@ PS.enter = function( x, y, data, options ) {
 // [options] = an object with optional parameters; see documentation for details
 
 PS.exit = function( x, y, data, options ) {
-	if (gameMode) {gameMode.exitBead(x, y, data, options);}
+	if (gameMode && !gameOver) {gameMode.exitBead(x, y, data, options);}
 };
 
 
@@ -162,7 +148,7 @@ PS.exit = function( x, y, data, options ) {
 // [options] = an object with optional parameters; see documentation for details
 
 PS.keyDown = function( key, shift, ctrl, options ) {
-	if (gameMode) {gameMode.keyDown(key, shift, ctrl, options);}
+	if (gameMode && !gameOver) {gameMode.keyDown(key, shift, ctrl, options);}
 };
 
 // PS.keyUp ( key, shift, ctrl, options )
@@ -175,7 +161,7 @@ PS.keyDown = function( key, shift, ctrl, options ) {
 // [options] = an object with optional parameters; see documentation for details
 
 PS.keyUp = function( key, shift, ctrl, options ) {
-	if (gameMode) {gameMode.keyUp(key, shift, ctrl, options);}
+	if (gameMode && !gameOver) {gameMode.keyUp(key, shift, ctrl, options);}
 };
 
 PS.shutdown = function () {

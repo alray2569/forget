@@ -17,6 +17,8 @@
 	puzzles: false
 */
 
+var gameover = false;
+
 var MAP_WALL = 0;
 var MAP_FLOOR = 1;
 var MAP_GOLD = 2;
@@ -140,6 +142,7 @@ function gameOver() {
 	PS.audioStop(bgm);
 	PS.audioPlay("fx_wilhelm");
 	PS.dbEvent(database, "endgame", "gameover");
+	gameover = true;
 	mySendDB();
 }
 
@@ -147,6 +150,7 @@ function gameWin() {
 	PS.fade(PS.ALL, PS.ALL, 60 * 5);
 	PS.color(PS.ALL, PS.ALL, PS.COLOR_BLACK);
 	PS.dbEvent(database, "endgame", "win");
+	gameover = true;
 	mySendDB();
 }
 
