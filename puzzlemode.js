@@ -108,8 +108,9 @@ var puzzle2 = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 var puzzles = [puzzle1];
 
 var PUZZLEMODE = {
+	totalMaps: 0,
 	enterMode: function () {
-		this.map = getNextPuzzle().splice(0);
+		this.map = getNextPuzzle();
 		gameMode = this;
 		this.playerPosition = this.getStart(this.map);
 		this.draw();

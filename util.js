@@ -133,6 +133,7 @@ function nextPhase() {
 		fileTypes: ["ogg", "mp3", "wav"]
 	});
 	MAZEMODE.totalMaps = 0;
+	PUZZLEMODE.totalMaps = 0;
 	hero.health = 26;
 	PS.dbEvent(database, "nextPhase", true);
 	MAZEMODE.enterMode(getNextMap());
@@ -191,5 +192,5 @@ function getNextMap() {
 }
 
 function getNextPuzzle() {
-	return puzzles[MAZEMODE.totalMaps - 1];
+	return puzzles[PUZZLEMODE.totalMaps].slice(0);
 }

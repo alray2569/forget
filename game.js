@@ -42,7 +42,7 @@ along with Perlenspiel. If not, see <http://www.gnu.org/licenses/>.
 	mySendDB: false,
 	newMap: false,
 	getNextMap: false,
-	gameOver: false
+	gameover: false
 */
 
 // This is a template for creating new Perlenspiel games
@@ -110,7 +110,7 @@ PS.init = function( system, options ) {
 // [options] = an object with optional parameters; see documentation for details
 
 PS.touch = function( x, y, data, options ) {
-	if (gameMode && !gameOver) {gameMode.click(x, y, data, options);}
+	if (gameMode && !gameover) {gameMode.click(x, y, data, options);}
 };
 
 // PS.enter ( x, y, button, data, options )
@@ -122,7 +122,7 @@ PS.touch = function( x, y, data, options ) {
 // [options] = an object with optional parameters; see documentation for details
 
 PS.enter = function( x, y, data, options ) {
-	if (gameMode && !gameOver) {gameMode.enterBead(x, y, data, options);}
+	if (gameMode && !gameover) {gameMode.enterBead(x, y, data, options);}
 };
 
 // PS.exit ( x, y, data, options )
@@ -134,7 +134,7 @@ PS.enter = function( x, y, data, options ) {
 // [options] = an object with optional parameters; see documentation for details
 
 PS.exit = function( x, y, data, options ) {
-	if (gameMode && !gameOver) {gameMode.exitBead(x, y, data, options);}
+	if (gameMode && !gameover) {gameMode.exitBead(x, y, data, options);}
 };
 
 
@@ -148,7 +148,7 @@ PS.exit = function( x, y, data, options ) {
 // [options] = an object with optional parameters; see documentation for details
 
 PS.keyDown = function( key, shift, ctrl, options ) {
-	if (gameMode && !gameOver) {gameMode.keyDown(key, shift, ctrl, options);}
+	if (gameMode && !gameover) {gameMode.keyDown(key, shift, ctrl, options);}
 };
 
 // PS.keyUp ( key, shift, ctrl, options )
@@ -161,7 +161,7 @@ PS.keyDown = function( key, shift, ctrl, options ) {
 // [options] = an object with optional parameters; see documentation for details
 
 PS.keyUp = function( key, shift, ctrl, options ) {
-	if (gameMode && !gameOver) {gameMode.keyUp(key, shift, ctrl, options);}
+	if (gameMode && !gameover) {gameMode.keyUp(key, shift, ctrl, options);}
 };
 
 PS.shutdown = function () {
