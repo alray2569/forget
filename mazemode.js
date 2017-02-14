@@ -34,9 +34,8 @@ var HEALTHBONUS = 5;
 var MAZEMODE = {
 	totalMaps: 0,
 	enterMode: function (map) {
-		prevMaps.push(map || this.map);
-		this.map = (map || this.map); // if not given, use existing
-		this.map.data = (map || this.map).data.splice(0);
+		prevMaps.push((map || this.map));
+		this.map = (map || this.map).data.slice(0); // if not given, use existing
 		gameMode = this;
 		this.playerPosition = this.getStart(this.map);
 		this.draw();
@@ -80,11 +79,11 @@ var MAZEMODE = {
 				break;
 			case PS.KEY_ARROW_UP:
 			case "w".charCodeAt(0):
-				if (!this.attemptMove(this.playerPosition - this.map.width)) {return;}
+				if (!this.attemptMove(this.playerPosition - XMAP_W)) {return;}
 				break;
 			case PS.KEY_ARROW_DOWN:
 			case "s".charCodeAt(0):
-				if (!this.attemptMove(this.playerPosition + this.map.width)) {return;}
+				if (!this.attemptMove(this.playerPosition + XMAP_W)) {return;}
 				break;
 			default:
 				break;
@@ -94,7 +93,7 @@ var MAZEMODE = {
 		
 	},
 	attemptMove: function (pos) {
-		switch (this.map.data[pos]) {
+		switch (this.map[pos]) {
 			case MAP_WALL:
 				return false;
 			case MAP_EXIT:
@@ -102,7 +101,7 @@ var MAZEMODE = {
 				break;
 			case MAP_GOLD:
 				addHealthClamp(hero, HEALTHBONUS);
-				this.map.data[pos] = MAP_FLOOR; // don't let use multiple times
+				this.map[pos] = MAP_FLOOR; // don't let use multiple times
 				/* falls through */// because gold should be landable
 			default: 
 				this.playerPosition = pos;
@@ -118,16 +117,16 @@ var MAZEMODE = {
 	draw: function () {
 		var x, y, pos;
 		// render map bits
-		for (x = 0; x < this.map.width; ++x) {
-			for (y = 0; y < this.map.height; ++y) {
-				pos = x + y * this.map.width;
+		for (x = 0; x < XMAP_W; ++x) {
+			for (y = 0; y < XMAP_H; ++y) {
+				pos = x + y * XMAP_W;
 				if (pos === this.playerPosition) {
 					// player is here
 					PS.color(x + DISPLAYOFFSET, y, ACTIVECOLORS.ACTOR_COLOR);
 				}
 				else {
 					// get the color based on the tile; helper function below
-					PS.color(x + DISPLAYOFFSET, y, this.colorFromTile(this.map.data[pos]));
+					PS.color(x + DISPLAYOFFSET, y, this.colorFromTile(this.map[pos]));
 				}
 			}
 		}
@@ -162,8 +161,8 @@ var MAZEMODE = {
 	},
 	getStart: function (map) {
 		var x;
-		for (x = 0; x < map.data.length; ++x) {
-			if (map.data[x] === MAP_ACTOR) {return x;}
+		for (x = 0; x < map.length; ++x) {
+			if (map[x] === MAP_ACTOR) {return x;}
 		}
 	}
 };
