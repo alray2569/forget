@@ -7,6 +7,7 @@
 	bgm: true,
 	bgm2: true,
 	MAZEMODE: false,
+	PUZZLEMODE: false,
 	hero: false,
 	database: false,
 	NONE: false,
@@ -136,7 +137,7 @@ function nextPhase() {
 	PUZZLEMODE.totalMaps = 0;
 	hero.health = 26;
 	PS.dbEvent(database, "nextPhase", true);
-	MAZEMODE.enterMode(getNextMap());
+	PUZZLEMODE.enterMode();
 }
 
 function gameOver() {
