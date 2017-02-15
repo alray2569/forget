@@ -27,7 +27,7 @@
 	BATTLEMODE: false,
 */
 
-var MAPSPERPHASE = 2;
+var MAPSPERPHASE = 3;
 
 var DISPLAYOFFSET = 6;
 

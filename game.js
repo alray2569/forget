@@ -1,4 +1,4 @@
-// game.js for Perlenspiel 3.2.x
+// game.js for Perlenspiel 3.2.,
 
 /* jshint -W097 */
 
@@ -33,6 +33,7 @@ along with Perlenspiel. If not, see <http://www.gnu.org/licenses/>.
 	putImage: false,
 	BATTLEMODE: false,
 	MAZEMODE: false,
+	PUZZLEMODE: false,
 	NONE: false,
 	Bat: false,
 	generate: false,
@@ -56,21 +57,15 @@ along with Perlenspiel. If not, see <http://www.gnu.org/licenses/>.
 // [system] = an object containing engine and platform information; see documentation for details
 // [options] = an object with optional parameters; see documentation for details
 
-var database;
-
-var images = {};
-
-var phase = 1;
-
-var WIDTH = 32;
-var HEIGHT = 32;
-var NUMMAPS = 1;
-
-var hero;
-
-var bgm, bgm2;
-
-var prevMaps = [];
+var database,
+	images = {},
+	phase = 1,
+	WIDTH = 32,
+	HEIGHT = 32,
+	NUMMAPS = 1,
+	hero,
+	bgm, bgm2,
+	prevMaps = [];
 
 PS.init = function( system, options ) {
 	PS.seed(PS.date().time);
