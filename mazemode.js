@@ -34,7 +34,7 @@ var DISPLAYOFFSET = 6;
 var AVGSTEPSPERENCOUNTER = 20;
 var VARSTEPSPERENCOUNTER = 8; // must be even
 
-var HEALTHBONUS = 5;
+var HEALTHBONUS = 6;
 
 var MAZEMODE = {
 	totalMaps: 0,

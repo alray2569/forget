@@ -15,7 +15,7 @@
 var WALL = 0,
 	OPEN = 1;
 
-var TOTALHEALTHPODS = 15;
+var TOTALHEALTHPODS = 20;
 
 function generate ( w, h ) {
 	var m, pushIntact, y, x, visited, stack, here, intact, len, there, numhealthpods = 0;
