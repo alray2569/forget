@@ -141,6 +141,8 @@ function nextPhase() {
 }
 
 function gameOver() {
+	PS.fade(PS.ALL, PS.ALL, 60 * 5);
+	PS.color(PS.ALL, PS.ALL, PS.COLOR_BLACK);
 	PS.audioStop(bgm);
 	PS.audioPlay("fx_wilhelm");
 	PS.dbEvent(database, "endgame", "gameover");
