@@ -96,7 +96,7 @@ PS.init = function( system, options ) {
 	newMap();
 	
 	preloadImages(["imgs/healthbar_frame.png", "imgs/hf_mod.png"], function () {
-		MAZEMODE.enterMode(getNextMap());
+		PUZZLEMODE.enterMode();
 		//PUZZLEMODE.enterMode();
 	});
 };
