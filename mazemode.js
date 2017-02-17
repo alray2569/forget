@@ -28,6 +28,7 @@
 */
 
 var MAPSPERPHASE = 3;
+var MAPSTOEND = 2;
 
 var DISPLAYOFFSET = 6;
 
@@ -55,6 +56,9 @@ var MAZEMODE = {
 			else {
 				nextPhase();
 			}
+		}
+		else if (this.totalMaps === MAPSTOEND) {
+			THAMUSMODE.enterMode();
 		}
 		else {
 			PUZZLEMODE.enterMode();
