@@ -6,7 +6,10 @@
 	prevMaps: false,
 	addHealthClamp: false,
 	ACTIVEIMGS: false,
-	database: false
+	ACTIVECOLORS: false,
+	database: false,
+	bookOrSmartPhone: false,
+	colToName: false
 */
 /* jshint browser: true */
 
@@ -72,18 +75,31 @@ var BATTLEMODE = {
 		this.lastState = gameMode; // record previous state for resume later
 		this.enemy = enemy; // the enemy we're fighting
 		
+		if (bookOrSmartPhone) {
+			PS.statusText("Strong: " + colToName(enemy.weakTo) + ", Weak: " + colToName(enemy.strongTo));
+		}
+
 		this.whoseTurn = PLAYER;
 		
-		this.draw();
+		PS.color(PS.ALL, PS.ALL, ACTIVECOLORS.FLOOR_COLOR);
+		putImage(ACTIVEIMGS[this.enemy.name], FIGHTERPOS.x, FIGHTERPOS.y - 15);
 		
 		this.pih = hero.health;
 		
 		// update the game mode
 		gameMode = this;
+
+		PS.timerStart(ENEMYPAUSE * 3, function (self) {
+			return function () {
+				self.draw();
+				return PS.ERROR;
+			};
+		}(this));
 	},
 	exitMode: function () {
 		PS.timerStop(this.timer2);
 		PS.dbEvent(database, "Battle-HealthLost", this.pih - hero.health);
+		PS.statusText("...");
 	},
 	click: function (x, y, data, options) {
 		if (this.whoseTurn !== PLAYER) {return;} // make sure it's our turn

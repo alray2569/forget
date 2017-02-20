@@ -62,7 +62,8 @@ var PHASE1IMGS = {
 	HEALTHBAR_FRAME: "imgs/healthbar_frame.png",
 	HERO_IMG: "imgs/thoth.png",
 	SHIM: "imgs/shim.png",
-	bat: "imgs/bat.png"
+	bat: "imgs/bat.png",
+	snake: "imgs/snake.png"
 };
 
 var PHASE2IMGS = {
@@ -70,7 +71,8 @@ var PHASE2IMGS = {
 	HEALTHBAR_FRAME: "imgs/hf_mod.png",
 	HERO_IMG: "imgs/you.png",
 	SHIM: "imgs/shiml.png",
-	bat: "imgs/bat_mod.png"
+	bat: "imgs/bat_mod.png",
+	snake: "imgs/snake_mod.png"
 };
 
 var ACTIVEIMGS = PHASE1IMGS;
@@ -198,4 +200,13 @@ function getNextMap() {
 
 function getNextPuzzle() {
 	return puzzles[PUZZLEMODE.totalMaps].slice(0);
+}
+
+function colToName(color) {
+	switch (color) {
+		case GREY: return "Grey";
+		case RED:  return "Red";
+		case BLUE: return "Blue";
+		case GREEN:return "Green";
+	}
 }
