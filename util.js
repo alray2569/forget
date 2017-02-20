@@ -20,6 +20,8 @@
 
 var gameover = false;
 
+var bookOrSmartPhone = true;
+
 var MAP_WALL = 0;
 var MAP_FLOOR = 1;
 var MAP_GOLD = 2;

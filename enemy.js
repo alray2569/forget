@@ -1,4 +1,4 @@
-/*global RED: false, GREY: false, GREEN: false, BLUE: false */
+/*global RED: false, GREY: false, GREEN: false, BLUE: false, PS:false*/
 
 function Enemy (startingHealth, weakTo, strongTo, name, behavior) {
 	this.health = startingHealth;
@@ -14,6 +14,18 @@ function Bat () {
 	}]);
 }
 
+function Snake () {
+	Enemy.apply (this, [13, GREY, GREEN, "snake", function () {
+		return PS.random(2) - 1 ? GREEN : GREY;
+	}]);
+}
+
 function getRandomEnemy() {
-	return new Bat();
+	var val = PS.random(2);
+	switch (val) {
+		case 1:
+			return new Bat ();
+		case 2:
+			return new Snake ();
+	}
 }
