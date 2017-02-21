@@ -14,7 +14,9 @@
 	MAP_FLOOR: false,
 	MAP_WALL: false,
 	MAP_GOLD: false,
-	gameMode: true
+	gameMode: true,
+	bookOrSmartPhone: true,
+	gameWin: false
 */
 
 var THAMUSMAP =[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -55,11 +57,42 @@ var THAMUSMODE = {
 		this.playerPosition = this.getStart(THAMUSMAP);
 		this.draw();
 		gameMode = this;
+		this.enable = true;
 	},
 	exitMode: function () {
-		if (phase == 1) {
-			PUZZLEMODE.enterMode();
-		}
+		this.enable = false;
+
+		PS.statusFade(30);
+
+		// sequence of dialogue
+		PS.timerStart(60 * 3, function () {
+			PS.statusText("You think this is good...");
+			PS.timerStart(60 * 3, function () {
+				PS.statusText("...that they will remember more...");
+				PS.timerStart(60 * 3, function () {
+					PS.statusText("You are mistaken...");
+					PS.timerStart(60 * 3, function () {
+						PS.statusText("...it will make them forget");
+						PS.timerStart(60 * 3, function () {
+							if (phase == 1) {
+								PUZZLEMODE.enterMode();
+							}
+							else {
+								gameWin();
+							}
+							bookOrSmartPhone = false;
+							PS.statusText("...");
+							PS.statusFade(0);
+							return PS.ERROR;
+						});
+						return PS.ERROR;
+					});
+					return PS.ERROR;
+				});
+				return PS.ERROR;
+			});
+			return PS.ERROR;
+		});
 	},
 	getStart: function (map) {
 		return map.indexOf(MAP_ACTOR);

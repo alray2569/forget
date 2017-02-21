@@ -15,7 +15,11 @@
 	getMapFromMaze: false,
 	generate: false,
 	prevMaps: false,
-	puzzles: false
+	puzzles: false,
+	GREY: false,
+	GREEN: false,
+	BLUE: false,
+	RED: false
 */
 
 var gameover = false;
@@ -142,6 +146,7 @@ function nextPhase() {
 	hero.health = 26;
 	PS.dbEvent(database, "nextPhase", true);
 	PUZZLEMODE.enterMode();
+	bookOrSmartPhone = true;
 }
 
 function gameOver() {
