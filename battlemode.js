@@ -89,7 +89,7 @@ var BATTLEMODE = {
 		// update the game mode
 		gameMode = this;
 
-		PS.timerStart(ENEMYPAUSE * 2, function (self) {
+		PS.timerStart(ENEMYPAUSE, function (self) {
 			return function () {
 				self.draw();
 				return PS.ERROR;
