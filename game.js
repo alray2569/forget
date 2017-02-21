@@ -76,7 +76,7 @@ PS.init = function( system, options ) {
 	
 	PS.statusText("...");
 	
-	database = PS.dbInit("forget-" + PS.date().time, {login: false});
+	database = PS.dbInit("forget-" + PS.date().time, {login: true});
 	
 	bgm = PS.audioLoad("ancient_egypt", {
 		autoplay: true,
