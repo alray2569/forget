@@ -75,11 +75,11 @@ var BATTLEMODE = {
 		this.lastState = gameMode; // record previous state for resume later
 		this.enemy = enemy; // the enemy we're fighting
 		
+		this.whoseTurn = NONE;
+
 		if (bookOrSmartPhone) {
 			PS.statusText("Strong: " + colToName(enemy.weakTo) + ", Weak: " + colToName(enemy.strongTo));
 		}
-
-		this.whoseTurn = PLAYER;
 		
 		PS.color(PS.ALL, PS.ALL, ACTIVECOLORS.FLOOR_COLOR);
 		putImage(ACTIVEIMGS[this.enemy.name], FIGHTERPOS.x, FIGHTERPOS.y - 15);
@@ -92,6 +92,7 @@ var BATTLEMODE = {
 		PS.timerStart(ENEMYPAUSE, function (self) {
 			return function () {
 				self.draw();
+				self.whoseTurn = PLAYER;
 				return PS.ERROR;
 			};
 		}(this));
@@ -162,6 +163,8 @@ var BATTLEMODE = {
 		var color = inrange(x, y),
 			a, b;
 		
+		if (this.whoseTurn !== PLAYER) {return;}
+
 		// uncolor the buttons on unhighlight
 		switch (color) {
 			case RED:

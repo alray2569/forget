@@ -62,11 +62,12 @@ var THAMUSMODE = {
 	exitMode: function () {
 		this.enable = false;
 
-		PS.statusFade(30);
+		PS.statusFade(60);
 
 		// sequence of dialogue
+		PS.statusText("Your invention of " + (phase === 1 ? "writing" : "the smartphone") + "...");
 		PS.timerStart(60 * 3, function () {
-			PS.statusText("You think this is good...");
+			PS.statusText("You think it is good...");
 			PS.timerStart(60 * 3, function () {
 				PS.statusText("...that they will remember more...");
 				PS.timerStart(60 * 3, function () {
@@ -135,6 +136,7 @@ var THAMUSMODE = {
 		}
 	},
 	keyDown: function (key, shift, ctrl, options) {
+		if (!this.enable) {return;}
 		switch (key) {
 			case PS.KEY_ARROW_LEFT:
 			case "a".charCodeAt(0):
@@ -169,5 +171,8 @@ var THAMUSMODE = {
 				return true;
 		}
 	},
-	keyUp: function () {}
+	keyUp: function () {},
+	exitBead: function () {},
+	enterBead: function () {},
+	click: function () {}
 };
