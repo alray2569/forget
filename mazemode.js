@@ -28,7 +28,7 @@
 */
 
 var MAPSPERPHASE = 3;
-var MAPSTOEND = 2;
+var MAPSTOEND = 1;
 
 var DISPLAYOFFSET = 6;
 
@@ -95,7 +95,7 @@ var MAZEMODE = {
 				if (!this.attemptMove(this.playerPosition + XMAP_W)) {return;}
 				break;
 			default:
-				break;
+				return;
 		}
 	},
 	keyUp: function (key, shift, ctrl, options) {

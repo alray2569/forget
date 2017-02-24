@@ -155,7 +155,7 @@ var THAMUSMODE = {
 				if (!this.attemptMove(this.playerPosition + XMAP_W)) {return;}
 				break;
 			default:
-				break;
+				return;
 		}
 	},
 	attemptMove: function (pos) {

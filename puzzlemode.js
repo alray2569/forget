@@ -222,7 +222,7 @@ var PUZZLEMODE = {
 				this.enterMode();
 				return;
 			default:
-				break;
+				return;
 		}
 		this.attemptMove(this.applyDir(dir, this.playerPosition), dir);
 	},
